@@ -163,9 +163,7 @@ function onGameButton(){
 
 function playLetterToGuess(){
 	if(!isGameRunning) return;
-	
-	blockAllCells = true;
-	playSound(letterToGuess+".m4a", () => { blockAllCells = false; });
+	playSound(letterToGuess+".m4a");
 }
 
 function guessLetter(letter){
@@ -186,7 +184,7 @@ function guessLetter(letter){
 			cell.classList.remove('selected');
 			cell.classList.add('selected-right');
 			
-			playSound("audio-right.mp3", chooseNextLetter);
+			playSound("right.mp3", chooseNextLetter);
 		}
 	}else{
 		callback = function(e){ 
@@ -194,7 +192,7 @@ function guessLetter(letter){
 			cell.classList.remove('selected');
 			cell.classList.add('selected-wrong');
 			
-			var nextSoundID = "audio-wrong"+(1+Math.floor(Math.random()*4));
+			var nextSoundID = "wrong"+(1+Math.floor(Math.random()*4));
 			playSound(nextSoundID+".m4a", gameEnd);
 		}
 	}
@@ -242,7 +240,7 @@ function gameEnd(){
 	}
 
 	if(score > highscore){
-		document.getElementById("audio-new-highscore").play();
+		playSound("new-highscore.mp3");
 
 		confetti({
 			spread: 360,
