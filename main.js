@@ -1,17 +1,52 @@
 letters = ["α","β","γ","δ","ε","ζ","η","θ","ι","κ","λ","μ","ν","ξ","ο","π","ρ","σ (ς)","τ","υ","φ","χ","ψ","ω"];
-letterSoundBuffers = [];
+soundsToPreload = [
+	"α.m4a",
+	"β.m4a",
+	"γ.m4a",
+	"δ.m4a",
+	"ε.m4a",
+	"ζ.m4a",
+	"η.m4a",
+	"θ.m4a",
+	"ι.m4a",
+	"κ.m4a",
+	"λ.m4a",
+	"μ.m4a",
+	"ν.m4a",
+	"ξ.m4a",
+	"ο.m4a",
+	"π.m4a",
+	"ρ.m4a",
+	"σ (ς).m4a",
+	"τ.m4a",
+	"υ.m4a",
+	"φ.m4a",
+	"χ.m4a",
+	"ψ.m4a",
+	"ω.m4a",
+	"new-highscore.mp3",
+	"right.mp3",
+	//"wrong0",
+	"wrong1.m4a","wrong2.m4a","wrong3.m4a","wrong4.m4a","wrong5.m4a",
+];
+soundCountToLoad = soundsToPreload.length;
+soundBuffers = {};
 
-function loadSoundBuffer(url){
-	console.log("try loading url: "+url);
+function loadSoundBuffer(soundID){
+	var url = "./audio/"+soundID;
+
     var request = new XMLHttpRequest();
     request.open('GET', url, true);
     request.responseType = 'arraybuffer';
-
-    // Decode asynchronously
+	
+	request.soundID = soundID;
     request.onload = function(e) {
-		console.log(e);
-		context.decodeAudioData(request.response, function(buffer) {
-			letterSoundBuffers.push(buffer);
+		//var request = e.srcElement;
+		audioContext.decodeAudioData(request.response, function(buffer){
+			console.log("Parsed buffer for ("+soundID+")");
+			soundBuffers[""+soundID] = buffer;
+			soundCountToLoad--;
+			if(soundCountToLoad == 0) console.log("finished loading audio!");
 		}, onError);
     }
     request.send();
@@ -27,33 +62,26 @@ function setupAudioEngine() {
 		alert('Web Audio API is not supported in this browser');
     }
 
-	for(var i=0;i<letters.length;i++){
-		var soundURL = "./audio/"+letters[i]+".m4a";
-		var soundBuffer = loadSoundBuffer(soundURL);
-		letterSoundBuffers.push(soundBuffer);
+	for(var i=0;i<soundsToPreload.length;i++){
+		var soundURL = "./audio/"+soundsToPreload[i];
+		loadSoundBuffer(soundURL);
 	}
 }
 
-function playSound(buffer) {
-    var source = context.createBufferSource(); // creates a sound source
-    source.buffer = buffer;                    // tell the source which sound to play
-    source.connect(context.destination);       // connect the source to the context's destination (the speakers)
-    source.noteOn(0);                          // play the source now
+function playSound(soundID, callback){
+	var buffer = soundBuffers[""+soundID];
+	if(buffer == undefined){
+		console.log("Tried to play invalid sound!");
+		console.log("Tried to play:"+soundID);
+		console.log("Valid Sounds:"+JSON.stringify(soundBuffers));
+	}
+	
+    var source = context.createBufferSource();
+    source.buffer = buffer;                   
+    source.onended = callback;                   
+    source.connect(context.destination);      
+    source.noteOn(0);                         
 }
-
-function finishedLoading(bufferList) {
-    // Create two sources and play them both together.
-    var source1 = audioContext.createBufferSource();
-    var source2 = audioContext.createBufferSource();
-    source1.buffer = bufferList[0];
-    source2.buffer = bufferList[1];
-
-    source1.connect(audioContext.destination);
-    source2.connect(audioContext.destination);
-    source1.noteOn(0);
-    source2.noteOn(0);
-}
-
 
 //# Make each cell into a button
 const cells = document.querySelectorAll('td:not(.unclickable)');
@@ -153,17 +181,17 @@ function onGameButton(){
 
 function playLetterToGuess(){
 	if(!isGameRunning) return;
-	document.getElementById(`audio-${letterToGuess}`).play();
+	playSound(letterToGuess+".m4a");
 }
 
 function guessLetter(letter){
-	var soundID = `audio-${letter}`;
-	
 	if(!isGameRunning){
-		document.getElementById(soundID).play();
+		playSound(letter+".m4a");
 		return;
 	}
 	
+	var soundID = `audio-${letter}`;
+	//playSound(letterToGuess+".m4a");
 	const audio = document.getElementById(soundID);
 	audio.letter = letter;
 	
@@ -189,8 +217,8 @@ function guessLetter(letter){
 			cell.classList.remove('selected');
 			cell.classList.add('selected-wrong');
 			
-			//var nextSoundID = "audio-wrong"+(1+Math.floor(Math.random()*4));
-			var nextSoundID = "audio-wrong0";
+			var nextSoundID = "audio-wrong"+(1+Math.floor(Math.random()*4));
+			//var nextSoundID = "audio-wrong0";
 			const audio = document.getElementById(nextSoundID);
 			audio.addEventListener("ended", gameEnd, { once: true });
 			audio.play();
