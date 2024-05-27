@@ -43,18 +43,21 @@ function loadSoundBuffer(soundID){
     request.onload = function(e) {
 		//var request = e.srcElement;
 		audioContext.decodeAudioData(request.response, function(buffer){
-			console.log("Parsed buffer for ("+soundID+")");
-			soundBuffers[""+soundID] = buffer;
+			console.log("Parsed buffer");
+			console.log("Parsed buffer for ("+request.soundID+")");
+			soundBuffers[""+request.soundID] = buffer;
 			soundCountToLoad--;
 			if(soundCountToLoad == 0) console.log("finished loading audio!");
-		}, onError);
+		}, function(e){
+			console.log("Error loading buffer for soundID ("+request.soundID+")");
+			console.log(e);
+		});
     }
     request.send();
 }
 
 //# Setup Audio Engine
 var audioContext;
-var bufferLoader;
 function setupAudioEngine() {
     try {
 		audioContext = new (window.AudioContext || window.webkitAudioContext)();
@@ -75,10 +78,10 @@ function playSound(soundID, callback){
 		console.log("Valid Sounds:"+JSON.stringify(soundBuffers));
 	}
 	
-    var source = context.createBufferSource();
+    var source = audioContext.createBufferSource();
     source.buffer = buffer;                   
     source.onended = callback;                   
-    source.connect(context.destination);      
+    source.connect(audioContext.destination);      
     source.noteOn(0);                         
 }
 
