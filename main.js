@@ -5,11 +5,13 @@ blockStartButtons = true;
 const popupInstruct = document.getElementById('popup-on-start');
 document.getElementById('popup-on-start-text').innerHTML = "Start in training mode. Click a letter to hear its name.\nThen click \"Start Game\" to hear a random name,\n and click which letter you think it is.\n\nSay the letters outloud aloud to learn them faster!\n\n\n\n(click the message box to make this go away)";
 popupInstruct.style.display = 'block';
-popupInstruct.addEventListener('click', function() {
+isLoadingAudio = false;
+popupInstruct.addEventListener('click', function(){
+	if(isLoadingAudio) return;
+	isLoadingAudio = true;
 	document.getElementById('popup-on-start-text').innerHTML = "LOADING AUDIO...";
 	setupAudioEngine();
 });
-
 
 //# Setup Audio Engine, Preload Sound files, and Pre-Parse Buffers
 var audioContext;
@@ -26,7 +28,7 @@ function setupAudioEngine(){
 }
 
 soundsToPreload = [
-"α.m4a","β.m4a", "γ.m4a", "δ.m4a", "ε.m4a", "ζ.m4a", "η.m4a", "θ.m4a", "ι.m4a", "κ.m4a", "λ.m4a", "μ.m4a", "ν.m4a", "ξ.m4a", "ο.m4a", "π.m4a", "ρ.m4a", "σ (ς).m4a", "τ.m4a", "υ.m4a", "φ.m4a", "χ.m4a", "ψ.m4a", "ω.m4a","new-highscore.mp3","right.mp3","wrong0","wrong1.m4a","wrong2.m4a","wrong3.m4a","wrong4.m4a","wrong5.m4a",
+"α.m4a","β.m4a", "γ.m4a", "δ.m4a", "ε.m4a", "ζ.m4a", "η.m4a", "θ.m4a", "ι.m4a", "κ.m4a", "λ.m4a", "μ.m4a", "ν.m4a", "ξ.m4a", "ο.m4a", "π.m4a", "ρ.m4a", "σ (ς).m4a", "τ.m4a", "υ.m4a", "φ.m4a", "χ.m4a", "ψ.m4a", "ω.m4a","new-highscore.mp3","right.mp3","wrong1.m4a","wrong2.m4a","wrong3.m4a","wrong4.m4a","wrong5.m4a",
 ];
 soundCountToLoad = soundsToPreload.length;
 soundBuffers = {};
@@ -193,7 +195,6 @@ function guessLetter(letter){
 			cell.classList.add('selected-wrong');
 			
 			var nextSoundID = "audio-wrong"+(1+Math.floor(Math.random()*4));
-			//var nextSoundID = "audio-wrong0";
 			playSound(nextSoundID+".m4a", gameEnd);
 		}
 	}
