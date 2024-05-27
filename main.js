@@ -1,33 +1,32 @@
-letters = ["α","β","γ","δ","ε","ζ","η","θ","ι","κ","λ","μ","ν","ξ","ο","π","ρ","σ (ς)","τ","υ","φ","χ","ψ","ω"];
+blockAllCells = true;
+blockStartButtons = true;
+
+//# Instructions Popup
+const popupInstruct = document.getElementById('popup-on-start');
+document.getElementById('popup-on-start-text').innerHTML = "Start in training mode. Click a letter to hear its name.\nThen click \"Start Game\" to hear a random name,\n and click which letter you think it is.\n\nSay the letters outloud aloud to learn them faster!\n\n\n\n(click the message box to make this go away)";
+popupInstruct.style.display = 'block';
+popupInstruct.addEventListener('click', function() {
+	document.getElementById('popup-on-start-text').innerHTML = "LOADING AUDIO...";
+	setupAudioEngine();
+});
+
+
+//# Setup Audio Engine, Preload Sound files, and Pre-Parse Buffers
+var audioContext;
+function setupAudioEngine(){
+    try {
+		audioContext = new (window.AudioContext || window.webkitAudioContext)();
+    }catch(e){
+		alert('Web Audio API is not supported in this browser');
+    }
+
+	for(var i=0;i<soundsToPreload.length;i++){
+		loadSoundBuffer(soundsToPreload[i]);
+	}
+}
+
 soundsToPreload = [
-	"α.m4a",
-	"β.m4a",
-	"γ.m4a",
-	"δ.m4a",
-	"ε.m4a",
-	"ζ.m4a",
-	"η.m4a",
-	"θ.m4a",
-	"ι.m4a",
-	"κ.m4a",
-	"λ.m4a",
-	"μ.m4a",
-	"ν.m4a",
-	"ξ.m4a",
-	"ο.m4a",
-	"π.m4a",
-	"ρ.m4a",
-	"σ (ς).m4a",
-	"τ.m4a",
-	"υ.m4a",
-	"φ.m4a",
-	"χ.m4a",
-	"ψ.m4a",
-	"ω.m4a",
-	"new-highscore.mp3",
-	"right.mp3",
-	//"wrong0",
-	"wrong1.m4a","wrong2.m4a","wrong3.m4a","wrong4.m4a","wrong5.m4a",
+"α.m4a","β.m4a", "γ.m4a", "δ.m4a", "ε.m4a", "ζ.m4a", "η.m4a", "θ.m4a", "ι.m4a", "κ.m4a", "λ.m4a", "μ.m4a", "ν.m4a", "ξ.m4a", "ο.m4a", "π.m4a", "ρ.m4a", "σ (ς).m4a", "τ.m4a", "υ.m4a", "φ.m4a", "χ.m4a", "ψ.m4a", "ω.m4a","new-highscore.mp3","right.mp3","wrong0","wrong1.m4a","wrong2.m4a","wrong3.m4a","wrong4.m4a","wrong5.m4a",
 ];
 soundCountToLoad = soundsToPreload.length;
 soundBuffers = {};
@@ -38,16 +37,15 @@ function loadSoundBuffer(soundID){
     var request = new XMLHttpRequest();
     request.open('GET', url, true);
     request.responseType = 'arraybuffer';
-	
+
 	request.soundID = soundID;
     request.onload = function(e) {
-		//var request = e.srcElement;
 		audioContext.decodeAudioData(request.response, function(buffer){
-			console.log("Parsed buffer");
 			console.log("Parsed buffer for ("+request.soundID+")");
 			soundBuffers[""+request.soundID] = buffer;
+			
 			soundCountToLoad--;
-			if(soundCountToLoad == 0) console.log("finished loading audio!");
+			if(soundCountToLoad == 0) finishedLoadingAllSounds();
 		}, function(e){
 			console.log("Error loading buffer for soundID ("+request.soundID+")");
 			console.log(e);
@@ -56,18 +54,11 @@ function loadSoundBuffer(soundID){
     request.send();
 }
 
-//# Setup Audio Engine
-var audioContext;
-function setupAudioEngine() {
-    try {
-		audioContext = new (window.AudioContext || window.webkitAudioContext)();
-    }catch(e){
-		alert('Web Audio API is not supported in this browser');
-    }
-
-	for(var i=0;i<soundsToPreload.length;i++){
-		loadSoundBuffer(soundsToPreload[i]);
-	}
+function finishedLoadingAllSounds(){
+	console.log("finished loading audio!");
+	popupInstruct.style.display = 'none';
+	blockAllCells = false;
+	blockStartButtons = false;
 }
 
 function playSound(soundID, callback){
@@ -116,21 +107,7 @@ const scoreText = document.getElementById("scoreText");
 const highscoreText = document.getElementById("highscoreText");
 const hearAgainButton = document.getElementById("hearAgainButton");
 
-blockAllCells = true;
-blockStartButtons = true;
-
-//# Instructions Popup
-const popupInstruct = document.getElementById('popup-on-start');
-document.getElementById('popup-on-start-text').innerHTML = "Start in training mode. Click a letter to hear its name.\nThen click \"Start Game\" to hear a random name,\n and click which letter you think it is.\n\nSay the letters outloud aloud to learn them faster!\n\n\n\n(click the message box to make this go away)";
-popupInstruct.style.display = 'block';
-popupInstruct.addEventListener('click', function() {
-    this.style.display = 'none';
-	blockAllCells = false;
-	blockStartButtons = false;
-	setupAudioEngine();
-});
-
-//# Post-Game Popup
+//# Hide Post-Game Popup
 const popup = document.getElementById('popup');
 popup.style.display = 'none';
 popup.addEventListener('click', function() {
@@ -139,6 +116,7 @@ popup.addEventListener('click', function() {
 });
 
 //# Game flow
+letters = ["α","β","γ","δ","ε","ζ","η","θ","ι","κ","λ","μ","ν","ξ","ο","π","ρ","σ (ς)","τ","υ","φ","χ","ψ","ω"];
 letterToGuess = undefined;
 isGameRunning = false;
 function chooseNextLetter(){
@@ -183,57 +161,45 @@ function onGameButton(){
 
 function playLetterToGuess(){
 	if(!isGameRunning) return;
-	playSound(letterToGuess+".m4a");
+	
+	blockAllCells = true;
+	playSound(letterToGuess+".m4a", () => { blockAllCells = false; });
 }
 
 function guessLetter(letter){
 	var soundID = letter+".m4a";
 	
 	if(!isGameRunning){
-		playSound(soundID, function(e){
-			console.log(soundID);
-			console.log(e);
-		});
-		
-		//playSound(soundID);
+		playSound(soundID);
 		return;
 	}
 	
-	//playSound(letterToGuess+".m4a");
-	const audio = document.getElementById(soundID);
-	audio.letter = letter;
-	
+	var callback;
 	if(letter == letterToGuess){
 		setScore(score+1);
 		guessHistory.push(letter);
 		
-		audio.addEventListener("ended", function(e){ 
-			var letter = e.srcElement.letter;
+		callback = function(e){ 
 			var cell = document.getElementById(letter);
 			cell.classList.remove('selected');
 			cell.classList.add('selected-right');
 			
-			const audio = document.getElementById("audio-right");
-			audio.addEventListener("ended", chooseNextLetter, { once: true });
-			audio.play();
-		}, { once: true });
+			playSound("audio-right.mp3", chooseNextLetter);
+		}
 	}else{
-		blockAllCells = true;
-		audio.addEventListener("ended", function(e){
-			var letter = e.srcElement.letter;
+		callback = function(e){ 
 			var cell = document.getElementById(letter);
 			cell.classList.remove('selected');
 			cell.classList.add('selected-wrong');
 			
 			var nextSoundID = "audio-wrong"+(1+Math.floor(Math.random()*4));
 			//var nextSoundID = "audio-wrong0";
-			const audio = document.getElementById(nextSoundID);
-			audio.addEventListener("ended", gameEnd, { once: true });
-			audio.play();
-		}, { once: true });
+			playSound(nextSoundID+".m4a", gameEnd);
+		}
 	}
 	
-	audio.play();
+	blockAllCells = true;
+	playSound(soundID, callback);
 }
 
 function gameEnd(){
@@ -274,8 +240,6 @@ function gameEnd(){
 		});
 	}
 
-	//🚧 save highscore
-	
 	if(score > highscore){
 		document.getElementById("audio-new-highscore").play();
 
