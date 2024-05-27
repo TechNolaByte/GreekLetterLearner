@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+	<title>Greek Alphabet</title>
+	<style>
+		body {
+			background-color: #1976D2;
+		}
+
+		.alphabet-table {
+			width: 70%;
+			margin: 20px auto;
+			border-collapse: collapse;
+		}
+
+		td {
+			text-align: center;
+			padding: 10px;
+			border: 1px solid white;
+			width: 75px; 
+			height: 75px;
+			font-size: 3em;
+			color: white;
+			cursor: pointer; 
+			background-color: #007bff; 
+		user-select: none;
+		}
+
+		.selected {
+			background-color: grey;
+		}
+	
+		.selected-right {
+			background-color: green;
+		}
+	
+		.selected-wrong {
+			background-color: red;
+		}
+	
+		.unclickable {
+			cursor: default;
+			background-color: #1976D2; 
+		}
+		
+		.header {
+			text-align: center;
+			font-size: 1em;
+			margin-top: 0px;
+			margin-bottom: 0px;
+			color: black;
+		}
+
+		.footer {
+			text-align: center;
+			font-size: 0.8em;
+			margin-top: 20px;
+			color: white;
+		}
+
+		.button-container {
+			text-align: center;
+			margin-top: 10px;
+		}
+
+		button {
+			border: none;
+			color: white;
+			padding: 10px 20px;
+			text-align: center;
+			text-decoration: none;
+			display: inline-block;
+			font-size: 16px;
+			cursor: pointer;
+			border-radius: 5px;
+		}
+
+		.start-button {
+			background-color: #4CAF50;
+		}
+
+		.quit-button {
+			background-color: #FF0000;
+		margin-left: 5px;
+		}
+
+		.hear-letter-again-button {
+			background-color: #DBCA37;
+		}
+		
+		.invalid-button {
+			background-color: #DDDDDD;
+			color: #DDDDDD;
+			cursor: default;
+		}
+			
+		.popup .popuptext {
+			background-color: yellow;
+		}
+			
+		.popup {
+			position: fixed;
+			z-index: 10;
+			left: calc(40%);
+			top: calc(40%);
+			width: 100%;
+			height: 100%;
+			overflow: auto; 
+			display: none;
+			
+			border-radius: 25px;
+			background: #73AD21;
+			padding: 20px;
+			width: 200px;
+			height: 150px; 
+		}
+
+		#popup {
+		  position: fixed;
+		  width: 300px;
+		  height: 200px;
+		  background-color: #f9f9f9;
+		}
+		
+		.popup-text {
+			
+		}
+	</style>
+</head>
+<body>
+
+	<div class="header" id="title">
+		<h1>Greek Alphabet Guessing Game (Audio Flash Cards)</h1>
+	</div>
+	
+	<div class="button-container">
+		<button class="invalid-button" id="hearAgainButton" onclick="playLetterToGuess();">Hear Letter Again</button>
+		<button class="start-button" id="gameButton" onclick="onGameButton();">Start Game</button>
+		<button class="unclickable" id="scoreText">Score: 0</button>
+		<button class="unclickable" id="highscoreText">Highscore: 0</button>
+	</div>
+	
+	<div class="popup" id="popup">
+		 <pre class=".popup-text" id="myPopupText"></pre>
+	</div>
+
+	<table class="alphabet-table">
+		<tr>
+			<td id="α">α</td>
+			<td id="ζ">ζ</td>
+			<td id="ι">ι</td>
+			<td id="ο">ο</td>
+			<td id="φ">φ</td>
+		</tr>
+		<tr>
+			<td id="β">β</td>
+			<td id="η">η</td>
+			<td id="κ">κ</td>
+			<td id="π">π</td>
+			<td id="χ">χ</td>
+		</tr>
+		<tr>
+			<td id="γ">γ</td>
+			<td id="θ">θ</td>
+			<td id="λ">λ</td>
+			<td id="ρ">ρ</td>
+			<td id="ψ">ψ</td>
+		</tr>
+		<tr>
+			<td id="δ">δ</td>
+			<td class="unclickable"></td>
+			<td id="μ">μ</td>
+			<td id="σ (ς)">σ (ς)</td>
+			<td id="ω">ω</td>
+		</tr>
+		<tr>
+			<td id="ε">ε</td>
+			<td class="unclickable"></td>
+			<td id="ν">ν</td>
+			<td id="τ">τ</td>
+			<td class="unclickable"></td>
+		</tr>
+		<tr>
+			<td class="unclickable"></td>
+			<td class="unclickable"></td>
+			<td id="ξ" >ξ</td>
+			<td id="υ" >υ</td>
+			<td class="unclickable"></td>
+		</tr>
+	</table>
+	
+	<audio id="audio-α" src="./audio/α.m4a" type="audio/m4a"></audio>
+	<audio id="audio-β" src="./audio/β.m4a" type="audio/m4a"></audio>
+	<audio id="audio-γ" src="./audio/γ.m4a" type="audio/m4a"></audio>
+	<audio id="audio-δ" src="./audio/δ.m4a" type="audio/m4a"></audio>
+	<audio id="audio-ε" src="./audio/ε.m4a" type="audio/m4a"></audio>
+	<audio id="audio-ζ" src="./audio/ζ.m4a" type="audio/m4a"></audio>
+	<audio id="audio-η" src="./audio/η.m4a" type="audio/m4a"></audio>
+	<audio id="audio-θ" src="./audio/θ.m4a" type="audio/m4a"></audio>
+	<audio id="audio-ι" src="./audio/ι.m4a" type="audio/m4a"></audio>
+	<audio id="audio-κ" src="./audio/κ.m4a" type="audio/m4a"></audio>
+	<audio id="audio-λ" src="./audio/λ.m4a" type="audio/m4a"></audio>
+	<audio id="audio-μ" src="./audio/μ.m4a" type="audio/m4a"></audio>
+	<audio id="audio-ν" src="./audio/ν.m4a" type="audio/m4a"></audio>
+	<audio id="audio-ξ" src="./audio/ξ.m4a" type="audio/m4a"></audio>
+	<audio id="audio-ο" src="./audio/ο.m4a" type="audio/m4a"></audio>
+	<audio id="audio-π" src="./audio/π.m4a" type="audio/m4a"></audio>
+	<audio id="audio-ρ" src="./audio/ρ.m4a" type="audio/m4a"></audio>
+	<audio id="audio-σ (ς)" src="./audio/σ (ς).m4a" type="audio/m4a"></audio>
+	<audio id="audio-τ" src="./audio/τ.m4a" type="audio/m4a"></audio>
+	<audio id="audio-υ" src="./audio/υ.m4a" type="audio/m4a"></audio>
+	<audio id="audio-φ" src="./audio/φ.m4a" type="audio/m4a"></audio>
+	<audio id="audio-χ" src="./audio/χ.m4a" type="audio/m4a"></audio>
+	<audio id="audio-ψ" src="./audio/ψ.m4a" type="audio/m4a"></audio>
+	<audio id="audio-ω" src="./audio/ω.m4a" type="audio/m4a"></audio>
+	
+	<audio id="audio-wrong1" src="./audio/wrong1.m4a" type="audio/m4a"></audio>
+	<audio id="audio-wrong2" src="./audio/wrong2.m4a" type="audio/m4a"></audio>
+	<audio id="audio-wrong3" src="./audio/wrong3.m4a" type="audio/m4a"></audio>
+	<audio id="audio-wrong4" src="./audio/wrong4.m4a" type="audio/m4a"></audio>
+	<audio id="audio-wrong5" src="./audio/wrong5.m4a" type="audio/m4a"></audio>
+	<audio id="audio-right" src="./audio/right.mp3" type="audio/mp3"></audio>
+	<audio id="audio-new-highscore" src="./audio/new-highscore.mp3" type="audio/mp3"></audio>
+ 
+	<script src="./tsparticles.confetti.bundle.min.js" webSrc="https://cdn.jsdelivr.net/npm/@tsparticles/confetti@3.0.3/tsparticles.confetti.bundle.min.js"></script>
+	<script src="./main.js"></script>
+</body>
+
+	<div class="footer">
+		<p>Click a letter to hear its name. Click "Start Game" to hear a random name and then click which letter you think it is. Say the letters outloud aloud to learn them faster!</p>
+		<p>Phonetic Source: <a href="https://www.youtube.com/watch?v=4m_Th14YfEo&t=620s" target="_blank">https://www.youtube.com/watch?v=4m_Th14YfEo&t=620s</a></p>
+	</div>
+	
+</html>
