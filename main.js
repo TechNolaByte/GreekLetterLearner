@@ -1,3 +1,60 @@
+letters = ["α","β","γ","δ","ε","ζ","η","θ","ι","κ","λ","μ","ν","ξ","ο","π","ρ","σ (ς)","τ","υ","φ","χ","ψ","ω"];
+letterSoundBuffers = [];
+
+function loadSoundBuffer(url){
+	console.log("try loading url: "+url);
+    var request = new XMLHttpRequest();
+    request.open('GET', url, true);
+    request.responseType = 'arraybuffer';
+
+    // Decode asynchronously
+    request.onload = function(e) {
+		console.log(e);
+		context.decodeAudioData(request.response, function(buffer) {
+			letterSoundBuffers.push(buffer);
+		}, onError);
+    }
+    request.send();
+}
+
+//# Setup Audio Engine
+var audioContext;
+var bufferLoader;
+function setupAudioEngine() {
+    try {
+		audioContext = new (window.AudioContext || window.webkitAudioContext)();
+    }catch(e){
+		alert('Web Audio API is not supported in this browser');
+    }
+
+	for(var i=0;i<letters.length;i++){
+		var soundURL = "./audio/"+letters[i]+".m4a";
+		var soundBuffer = loadSoundBuffer(soundURL);
+		letterSoundBuffers.push(soundBuffer);
+	}
+}
+
+function playSound(buffer) {
+    var source = context.createBufferSource(); // creates a sound source
+    source.buffer = buffer;                    // tell the source which sound to play
+    source.connect(context.destination);       // connect the source to the context's destination (the speakers)
+    source.noteOn(0);                          // play the source now
+}
+
+function finishedLoading(bufferList) {
+    // Create two sources and play them both together.
+    var source1 = audioContext.createBufferSource();
+    var source2 = audioContext.createBufferSource();
+    source1.buffer = bufferList[0];
+    source2.buffer = bufferList[1];
+
+    source1.connect(audioContext.destination);
+    source2.connect(audioContext.destination);
+    source1.noteOn(0);
+    source2.noteOn(0);
+}
+
+
 //# Make each cell into a button
 const cells = document.querySelectorAll('td:not(.unclickable)');
 let selectedCell = null;
@@ -40,6 +97,7 @@ popupInstruct.addEventListener('click', function() {
     this.style.display = 'none';
 	blockAllCells = false;
 	blockStartButtons = false;
+	setupAudioEngine();
 });
 
 //# Post-Game Popup
@@ -51,7 +109,6 @@ popup.addEventListener('click', function() {
 });
 
 //# Game flow
-letters = ["α","β","γ","δ","ε","ζ","η","θ","ι","κ","λ","μ","ν","ξ","ο","π","ρ","σ (ς)","τ","υ","φ","χ","ψ","ω"];
 letterToGuess = undefined;
 isGameRunning = false;
 function chooseNextLetter(){
