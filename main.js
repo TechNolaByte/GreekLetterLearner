@@ -29,6 +29,19 @@ const scoreText = document.getElementById("scoreText");
 const highscoreText = document.getElementById("highscoreText");
 const hearAgainButton = document.getElementById("hearAgainButton");
 
+blockAllCells = true;
+blockStartButtons = true;
+
+//# Instructions Popup
+const popupInstruct = document.getElementById('popup-on-start');
+document.getElementById('popup-on-start-text').innerHTML = "Click a letter to hear its name.\nClick \"Start Game\" to hear a random name,\nthen click which letter you think it is.\n\nSay the letters outloud aloud to learn them faster!";
+popupInstruct.style.display = 'block';
+popupInstruct.addEventListener('click', function() {
+    this.style.display = 'none';
+	blockAllCells = false;
+	blockStartButtons = false;
+});
+
 //# Post-Game Popup
 const popup = document.getElementById('popup');
 popup.style.display = 'none';
@@ -41,7 +54,6 @@ popup.addEventListener('click', function() {
 letters = ["α","β","γ","δ","ε","ζ","η","θ","ι","κ","λ","μ","ν","ξ","ο","π","ρ","σ (ς)","τ","υ","φ","χ","ψ","ω"];
 letterToGuess = undefined;
 isGameRunning = false;
-blockAllCells = false;
 function chooseNextLetter(){
 	resetCellStates();
 	
@@ -56,6 +68,8 @@ function chooseNextLetter(){
 }
 
 function onGameButton(){
+	if(blockStartButtons) return;
+	
 	resetCellStates();
 	
 	if(!isGameRunning){
@@ -82,14 +96,14 @@ function onGameButton(){
 
 function playLetterToGuess(){
 	if(!isGameRunning) return;
-	playSound(`audio-${letterToGuess}`);
+	document.getElementById(`audio-${letterToGuess}`).play();
 }
 
 function guessLetter(letter){
 	var soundID = `audio-${letter}`;
 	
 	if(!isGameRunning){
-		playSound(soundID);
+		document.getElementById(soundID).play();
 		return;
 	}
 	
@@ -126,13 +140,6 @@ function guessLetter(letter){
 	}
 	
 	audio.play();
-}
-
-function playSound(id){
-	const audio = document.getElementById(id);
-	console.log(audio);
-	audio.play();
-	return audio;
 }
 
 function gameEnd(){
