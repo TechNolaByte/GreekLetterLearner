@@ -34,7 +34,7 @@ blockStartButtons = true;
 
 //# Instructions Popup
 const popupInstruct = document.getElementById('popup-on-start');
-document.getElementById('popup-on-start-text').innerHTML = "Click a letter to hear its name.\nClick \"Start Game\" to hear a random name,\nthen click which letter you think it is.\n\nSay the letters outloud aloud to learn them faster!";
+document.getElementById('popup-on-start-text').innerHTML = "Start in training mode. Click a letter to hear its name.\nThen click \"Start Game\" to hear a random name,\n and lick which letter you think it is.\n\nSay the letters outloud aloud to learn them faster!\n\n\n\n(click the message box to make this go away)";
 popupInstruct.style.display = 'block';
 popupInstruct.addEventListener('click', function() {
     this.style.display = 'none';
