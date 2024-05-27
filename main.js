@@ -79,10 +79,10 @@ function playSound(soundID, callback){
 	}
 	
     var source = audioContext.createBufferSource();
-    source.buffer = buffer;                   
-    source.onended = callback;                   
-    source.connect(audioContext.destination);      
-    source.noteOn(0);                         
+    source.buffer = buffer;
+    if(callback) source.onended = callback;
+    source.connect(audioContext.destination);
+    source.start();
 }
 
 //# Make each cell into a button
@@ -187,12 +187,18 @@ function playLetterToGuess(){
 }
 
 function guessLetter(letter){
+	var soundID = letter+".m4a";
+	
 	if(!isGameRunning){
-		playSound(letter+".m4a");
+		playSound(soundID, function(e){
+			console.log(soundID);
+			console.log(e);
+		});
+		
+		//playSound(soundID);
 		return;
 	}
 	
-	var soundID = `audio-${letter}`;
 	//playSound(letterToGuess+".m4a");
 	const audio = document.getElementById(soundID);
 	audio.letter = letter;
