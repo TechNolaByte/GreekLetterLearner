@@ -63,8 +63,7 @@ function setupAudioEngine() {
     }
 
 	for(var i=0;i<soundsToPreload.length;i++){
-		var soundURL = "./audio/"+soundsToPreload[i];
-		loadSoundBuffer(soundURL);
+		loadSoundBuffer(soundsToPreload[i]);
 	}
 }
 
