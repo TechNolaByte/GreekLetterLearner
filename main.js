@@ -132,7 +132,8 @@ function guessLetter(letter){
 			cell.classList.remove('selected');
 			cell.classList.add('selected-wrong');
 			
-			var nextSoundID = "audio-wrong"+(1+Math.floor(Math.random()*4));
+			//var nextSoundID = "audio-wrong"+(1+Math.floor(Math.random()*4));
+			var nextSoundID = "audio-wrong0";
 			const audio = document.getElementById(nextSoundID);
 			audio.addEventListener("ended", gameEnd, { once: true });
 			audio.play();
