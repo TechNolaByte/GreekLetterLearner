@@ -33,6 +33,22 @@ soundsToPreload = [
 soundCountToLoad = soundsToPreload.length;
 soundBuffers = {};
 
+isUpperCase = false;
+function changeCase(){
+	const cells = document.querySelectorAll('td:not(.unclickable)');
+	cells.forEach(cell => {
+		if(isUpperCase){
+			cell.textContent = cell.textContent.toLowerCase();
+			if(cell.textContent == "σ (σ)") cell.textContent = "σ (ς)";
+		}else cell.textContent = cell.textContent.toUpperCase();
+		
+	});
+	
+	isUpperCase = !isUpperCase;
+	
+	caseButton.textContent = "Case: "+(isUpperCase ? "Upper" : "Lower");
+}
+
 function loadSoundBuffer(soundID){
 	var url = "./audio/"+soundID;
 
@@ -108,6 +124,7 @@ const gameButton = document.getElementById("gameButton");
 const scoreText = document.getElementById("scoreText");
 const highscoreText = document.getElementById("highscoreText");
 const hearAgainButton = document.getElementById("hearAgainButton");
+const caseButton = document.getElementById("changeCaseButton");
 
 //# Hide Post-Game Popup
 const popup = document.getElementById('popup');

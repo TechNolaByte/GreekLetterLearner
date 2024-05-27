@@ -97,6 +97,12 @@
 			cursor: default;
 		}
 		
+		.letter-case-button {
+			background-color: #AAAAAA;
+			color: #DDDDDD;
+			cursor: default;
+		}
+		
 		.popup {
 			position: fixed;
 			z-index: 10;
@@ -126,6 +132,7 @@
 	</div>
 	
 	<div class="button-container">
+		<button class="letter-case-button" id="changeCaseButton" onclick="changeCase();">Case: Lower</button>
 		<button class="invalid-button" id="hearAgainButton" onclick="playLetterToGuess();">Hear Letter Again</button>
 		<button class="start-button" id="gameButton" onclick="onGameButton();">Start Game</button>
 		<button class="unclickable" id="scoreText">Score: 0</button>
