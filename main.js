@@ -106,6 +106,7 @@ cells.forEach(cell => {
 		selectedCell = cell;
 
 		var myLetter = cell.textContent.toLowerCase();
+		if(myLetter == "σ (σ)") myLetter = "σ (ς)";
 		guessLetter(myLetter);
 	});
 });
@@ -279,8 +280,6 @@ function gameEnd(){
 				}
 			}
 		});
-		
-		setHighscore(score);
 
 		var popupText = `NEW HIGHSCORE!\n\nScore: ${score}\nHighscore: ${highscore}\n\nNice job, try again to get even more!`;
 	}else var popupText = `Score: ${score}\nHighscore: ${highscore}\n\nTry again to get a new highscore!`;
@@ -293,12 +292,14 @@ function gameEnd(){
 function setScore(newScore){
 	score = newScore;
 	scoreText.textContent = `Score: ${score}`;
+	
+	if(score > highscore) setHighscore(score, false);
 }
 
-function setHighscore(newScore){
+function setHighscore(newScore, updateText = true){
 	highscore = newScore;
 	createCookie(highscoreCookieName, highscore, 400); // 400 is max lifespan I think
-	highscoreText.textContent = `Highscore: ${highscore}`;
+	if(updateText) highscoreText.textContent = `Highscore: ${highscore}`;
 }
 
 //# Load Highscore
