@@ -293,7 +293,7 @@ function setScore(newScore){
 	score = newScore;
 	scoreText.textContent = `Score: ${score}`;
 	
-	if(score > highscore) setHighscore(score, false);
+	if(score > highscore) setHighscore(score, true);
 }
 
 function setHighscore(newScore, updateText = true){
