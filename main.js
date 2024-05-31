@@ -161,6 +161,7 @@ function onGameButton(){
 		isGameRunning = true;
 			
 		setScore(0);
+		hasSetNewHighscore = false;
 		guessHistory = [];
 		popup.style.display = 'none';
 		
@@ -257,7 +258,7 @@ function gameEnd(){
 		});
 	}
 
-	if(score > highscore){
+	if(hasSetNewHighscore){
 		playSound("new-highscore.mp3");
 
 		confetti({
@@ -289,11 +290,15 @@ function gameEnd(){
 	popup.style.display = "block";
 }
 
+hasSetNewHighscore = false;
 function setScore(newScore){
 	score = newScore;
 	scoreText.textContent = `Score: ${score}`;
 	
-	if(score > highscore) setHighscore(score, true);
+	if(score > highscore){
+		hasSetNewHighscore = true;
+		setHighscore(score, true);
+	}
 }
 
 function setHighscore(newScore, updateText = true){
