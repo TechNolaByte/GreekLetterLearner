@@ -33,11 +33,10 @@ soundsToPreload = [
 "hit-01.m4a","hit-02.m4a","hit-03.m4a","hit-04.m4a","hit-05.m4a","hit-06.m4a",
 "whole_alphabet.m4a",
 "you-guessed-a-hinted-letter.m4a",
-"if-you-do-this-one-more-time.m4a",
-"if-you-click-on-one-more-hint-blocked.m4a",
 "hint-01.m4a","hint-02.m4a","hint-03.m4a","hint-04.m4a","hint-05.m4a","hint-06.m4a","hint-07.m4a","hint-08.m4a","hint-09.m4a","hint-10.m4a","hint-11.m4a","hint-12.m4a",
 "no-more-hints.m4a",
 "no-more-hints2.m4a",
+"if-you-do-this-one-more-time.m4a",
 "if-you-ask-for-one-more-hint.m4a"
 ];
 soundCountToLoad = soundsToPreload.length;
@@ -267,6 +266,10 @@ function giveAHint(){
 		}else if(has_played_no_more_hints == 2){
 			has_played_no_more_hints++;
 			blockAllCells = true;
+			playSound("if-you-do-this-one-more-time.m4a", function(){ blockAllCells = false; });
+		}else if(has_played_no_more_hints == 3){
+			has_played_no_more_hints++;
+			blockAllCells = true;
 			playSound("if-you-ask-for-one-more-hint.m4a", function(){ blockAllCells = false; });
 		}else{
 			playSound("hit-06.m4a", function(){
@@ -279,7 +282,6 @@ function giveAHint(){
 }
 
 has_played_no_more_hints = 0;
-has_played_dont_guess_hinted = 0;
 
 function guessLetter(letter){
 	var soundID = letter+".m4a";
@@ -308,25 +310,8 @@ function guessLetter(letter){
 			cell.classList.add('selected-wrong');
 			
 			if(cell.classList.contains('selected-hint')){
-				if(has_played_dont_guess_hinted == 0){
-					has_played_dont_guess_hinted++;
-					blockAllCells = true;
-					playSound("you-guessed-a-hinted-letter.m4a", function(){ blockAllCells = false; });
-				}else if(has_played_dont_guess_hinted == 1){
-					has_played_dont_guess_hinted++;
-					blockAllCells = true;
-					playSound("if-you-do-this-one-more-time.m4a", function(){ blockAllCells = false; });
-				}else if(has_played_dont_guess_hinted == 2){
-					has_played_dont_guess_hinted++;
-					blockAllCells = true;
-					playSound("if-you-click-on-one-more-hint-blocked.m4a", function(){ blockAllCells = false; });
-				}else{
-					playSound("hit-06.m4a", function(){
-						hasSetNewHighscore = true;
-						setHighscore(0, true);
-						gameEnd();
-					});
-				}
+				blockAllCells = true;
+				playSound("you-guessed-a-hinted-letter.m4a", function(){ blockAllCells = false; });
 			}else{
 				wrong_sounds = ["hit-01.m4a","hit-02.m4a","hit-03.m4a","hit-04.m4a","hit-05.m4a","hit-06.m4a"];
 				shuffle(wrong_sounds);
