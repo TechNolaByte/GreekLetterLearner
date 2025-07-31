@@ -32,6 +32,7 @@ soundsToPreload = [
 "new-highscore.mp3","right.mp3",
 "hit-01.m4a","hit-02.m4a","hit-03.m4a","hit-04.m4a","hit-05.m4a","hit-06.m4a",
 "whole_alphabet.m4a",
+"you-guessed-a-hinted-letter.m4a",
 "hint-01.m4a","hint-02.m4a","hint-03.m4a","hint-04.m4a","hint-05.m4a","hint-06.m4a","hint-07.m4a","hint-08.m4a","hint-09.m4a","hint-10.m4a","hint-11.m4a","hint-12.m4a",
 "no-more-hints.m4a"
 ];
@@ -122,6 +123,7 @@ function resetCellStates(){
 		cell.classList.remove('selected');
 		cell.classList.remove('selected-right');
 		cell.classList.remove('selected-wrong');
+		cell.classList.remove('selected-hint');
 	});	
 }
 
@@ -215,13 +217,6 @@ function giveAHint(){
 	
 	setScore(score-1);
 	
-	hint_sound_effects_index++;
-	if(hint_sound_effects_index > hint_sound_effects.length){
-		shuffle(hint_sound_effects);
-		hint_sound_effects_index = 0;
-	}
-	
-	playSound(hint_sound_effects[hint_sound_effects_index]);
 	
 	mark_cell = function(letter){ 
 		var cell = document.getElementById(letter)
@@ -239,6 +234,13 @@ function giveAHint(){
 
 	shuffle(not_it_letters);
 	if(not_it_letters.length > 0){
+		hint_sound_effects_index++;
+		if(hint_sound_effects_index > hint_sound_effects.length){
+			shuffle(hint_sound_effects);
+			hint_sound_effects_index = 0;
+		}
+		playSound(hint_sound_effects[hint_sound_effects_index]);
+		
 		mark_cell(not_it_letters.pop())
 		if(not_it_letters.length > 0) mark_cell(not_it_letters.pop())
 		if(not_it_letters.length > 0) mark_cell(not_it_letters.pop())
@@ -273,9 +275,13 @@ function guessLetter(letter){
 			cell.classList.remove('selected');
 			cell.classList.add('selected-wrong');
 			
-			wrong_sounds = ["hit-01.m4a","hit-02.m4a","hit-03.m4a","hit-04.m4a","hit-05.m4a","hit-06.m4a"];
-			shuffle(wrong_sounds);
-			playSound(wrong_sounds.pop(), gameEnd);
+			if(cell.classList.contains('selected-hint')){
+				playSound("you-guessed-a-hinted-letter.m4a");
+			}else{
+				wrong_sounds = ["hit-01.m4a","hit-02.m4a","hit-03.m4a","hit-04.m4a","hit-05.m4a","hit-06.m4a"];
+				shuffle(wrong_sounds);
+				playSound(wrong_sounds.pop(), gameEnd);
+			}
 		}
 	}
 	
