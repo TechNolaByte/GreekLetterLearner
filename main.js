@@ -219,7 +219,7 @@ console.log(hint_sound_effects);
 hint_is_blocked = false;
 function giveAHint(){
 	if(!isGameRunning) return;
-	if(hint_is_blocked) return;
+	if(hint_is_blocked || blockAllCells) return;
 	
 	setScore(score-1);
 	
