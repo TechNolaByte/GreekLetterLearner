@@ -269,13 +269,13 @@ function guessLetter(letter){
 	
 	var callback;
 	if(letter == letterToGuess){
-		setScore(score+1);
 		guessHistory.push(letter);
 		
 		callback = function(e){ 
 			var cell = document.getElementById(letter);
 			cell.classList.remove('selected');
 			cell.classList.add('selected-right');
+			setScore(score+1);
 			
 			playSound("right.mp3", chooseNextLetter);
 		}
