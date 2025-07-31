@@ -223,7 +223,7 @@ function giveAHint(){
 	
 	playSound(hint_sound_effects[hint_sound_effects_index]);
 	
-	mark_cell = function(e){ 
+	mark_cell = function(letter){ 
 		var cell = document.getElementById(letter)
 		cell.classList.remove('selected');
 		cell.classList.add('selected-hint');
