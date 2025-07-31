@@ -28,7 +28,7 @@ function setupAudioEngine(){
 }
 
 soundsToPreload = [
-"α.m4a","β.m4a", "γ.m4a", "δ.m4a", "ε.m4a", "ζ.m4a", "η.m4a", "θ.m4a", "ι.m4a", "κ.m4a", "λ.m4a", "μ.m4a", "ν.m4a", "ξ.m4a", "ο.m4a", "π.m4a", "ρ.m4a", "σ (ς).m4a", "τ.m4a", "υ.m4a", "φ.m4a", "χ.m4a", "ψ.m4a", "ω.m4a","new-highscore.mp3","right.mp3","wrong1.m4a","wrong2.m4a","wrong3.m4a","wrong4.m4a","wrong5.m4a",
+"α.m4a","β.m4a", "γ.m4a", "δ.m4a", "ε.m4a", "ζ.m4a", "η.m4a", "θ.m4a", "ι.m4a", "κ.m4a", "λ.m4a", "μ.m4a", "ν.m4a", "ξ.m4a", "ο.m4a", "π.m4a", "ρ.m4a", "σ (ς).m4a", "τ.m4a", "υ.m4a", "φ.m4a", "χ.m4a", "ψ.m4a", "ω.m4a","new-highscore.mp3","right.mp3","wrong1.m4a","wrong2.m4a","wrong3.m4a","wrong4.m4a","wrong5.m4a","whole_alphabet.m4a"
 ];
 soundCountToLoad = soundsToPreload.length;
 soundBuffers = {};
@@ -339,3 +339,7 @@ function createCookie(name, value, days) {
 }
 
 // Cookie code modified from https://stackoverflow.com/questions/4825683/how-do-i-create-and-read-a-value-from-cookie-with-javascript
+
+function playWholeAlphabet(){
+	playSound("whole_alphabet.m4a");
+}

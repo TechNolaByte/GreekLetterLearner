@@ -103,6 +103,11 @@
 			cursor: default;
 		}
 		
+		.whole-alphabet-button {
+			background-color: #332277;
+			color: #DDDDDD;
+		}
+		
 		.popup {
 			position: fixed;
 			z-index: 10;
@@ -135,6 +140,7 @@
 		<button class="letter-case-button" id="changeCaseButton" onclick="changeCase();">Case: Lower</button>
 		<button class="invalid-button" id="hearAgainButton" onclick="playLetterToGuess();">Hear Letter Again</button>
 		<button class="start-button" id="gameButton" onclick="onGameButton();">Start Game</button>
+		<button class="whole-alphabet-button" id="wholeAlphabet" onclick="playWholeAlphabet();">Hear Whole Alphabet</button>
 		<button class="unclickable" id="scoreText">Score: 0</button>
 		<button class="unclickable" id="highscoreText">Highscore: 0</button>
 	</div>
@@ -197,6 +203,7 @@
 </body>
 
 	<div class="footer">
+		<p>I have slowed down the pronunciation a little, you will learn to say them faster than this.</p>
 		<p>It is extremely difficult to discern which pronunciations are "correct".</p>
 		<p>I have tried matching our Machen textbook as closely as possible, since that is what we are using.</p>
 		<p>But have made slight modification according to <p><a href="https://en.wikibooks.org/wiki/Koine_Greek/1._Alphabet,_Pronunciation,_and_Punctuation" target="_blank">https://en.wikibooks.org/wiki/Koine_Greek/1._Alphabet,_Pronunciation,_and_Punctuation</a></p></p>
