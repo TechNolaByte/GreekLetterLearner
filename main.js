@@ -248,7 +248,7 @@ function giveAHint(){
 			hint_sound_effects_index = 0;
 		}
 		
-		//blockAllCells = true;
+		blockAllCells = true;
 		playSound(hint_sound_effects[hint_sound_effects_index], function(){ blockAllCells = false; });
 		
 		mark_cell(not_it_letters.pop())
