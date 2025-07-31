@@ -133,6 +133,7 @@ const scoreText = document.getElementById("scoreText");
 const highscoreText = document.getElementById("highscoreText");
 const hearAgainButton = document.getElementById("hearAgainButton");
 const caseButton = document.getElementById("changeCaseButton");
+const wholeAlphabetButton = document.getElementById("wholeAlphabet");
 const giveMeAHintButton = document.getElementById("giveMeAHintButton");
 
 //# Hide Post-Game Popup
@@ -183,6 +184,9 @@ function onGameButton(){
 		
 		giveMeAHintButton.classList.remove("invalid-button");
 		giveMeAHintButton.classList.add("give-me-a-hint-button");
+		
+		wholeAlphabetButton.classList.remove("whole-alphabet-button");
+		wholeAlphabetButton.classList.add("invalid-button");
 
 		// Choose letter
 		chooseNextLetter();
@@ -212,11 +216,12 @@ hint_sound_effects = ["hint-01.m4a","hint-02.m4a","hint-03.m4a","hint-04.m4a","h
 shuffle(hint_sound_effects);
 hint_sound_effects_index = -1;
 console.log(hint_sound_effects);
+hint_is_blocked = false;
 function giveAHint(){
 	if(!isGameRunning) return;
+	if(hint_is_blocked) return;
 	
 	setScore(score-1);
-	
 	
 	mark_cell = function(letter){ 
 		var cell = document.getElementById(letter)
@@ -239,13 +244,18 @@ function giveAHint(){
 			shuffle(hint_sound_effects);
 			hint_sound_effects_index = 0;
 		}
-		playSound(hint_sound_effects[hint_sound_effects_index]);
+		
+		hint_is_blocked = true;
+		blockAllCells = true;
+		playSound(hint_sound_effects[hint_sound_effects_index], function(){ hint_is_blocked = false; blockAllCells = false; });
 		
 		mark_cell(not_it_letters.pop())
 		if(not_it_letters.length > 0) mark_cell(not_it_letters.pop())
 		if(not_it_letters.length > 0) mark_cell(not_it_letters.pop())
 	}else{
-		playSound("no-more-hints.m4a");
+		hint_is_blocked = true;
+		blockAllCells = true;
+		playSound("no-more-hints.m4a", function(){ hint_is_blocked = false; blockAllCells = false; });
 	}
 }
 
@@ -276,7 +286,7 @@ function guessLetter(letter){
 			cell.classList.add('selected-wrong');
 			
 			if(cell.classList.contains('selected-hint')){
-				playSound("you-guessed-a-hinted-letter.m4a");
+				playSound("you-guessed-a-hinted-letter.m4a", function(){ blockAllCells = false; });
 			}else{
 				wrong_sounds = ["hit-01.m4a","hit-02.m4a","hit-03.m4a","hit-04.m4a","hit-05.m4a","hit-06.m4a"];
 				shuffle(wrong_sounds);
@@ -304,7 +314,10 @@ function gameEnd(){
 	
 	giveMeAHintButton.classList.remove("give-me-a-hint-button");
 	giveMeAHintButton.classList.add("invalid-button");
-
+	
+	wholeAlphabetButton.classList.remove("invalid-button");
+	wholeAlphabetButton.classList.add("whole-alphabet-button");
+	
 	// Confetti every letter guessed this game
 	for(var i = 0; i < guessHistory.length; i++){
 		confetti({
@@ -413,5 +426,6 @@ function createCookie(name, value, days) {
 // Cookie code modified from https://stackoverflow.com/questions/4825683/how-do-i-create-and-read-a-value-from-cookie-with-javascript
 
 function playWholeAlphabet(){
+	if(isGameRunning) return;
 	playSound("whole_alphabet.m4a");
 }
