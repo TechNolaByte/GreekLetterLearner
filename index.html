@@ -40,6 +40,10 @@
 		.selected-wrong {
 			background-color: red;
 		}
+		
+		.selected-hint {
+			background-color: red;
+		}
 	
 		.unclickable {
 			cursor: default;
@@ -91,6 +95,10 @@
 			background-color: #DBCA37;
 		}
 		
+		.give-me-a-hint-button {
+			background-color: #A50037;
+		}
+		
 		.invalid-button {
 			background-color: #DDDDDD;
 			color: #DDDDDD;
@@ -138,9 +146,10 @@
 	
 	<div class="button-container">
 		<button class="letter-case-button" id="changeCaseButton" onclick="changeCase();">Case: Lower</button>
-		<button class="invalid-button" id="hearAgainButton" onclick="playLetterToGuess();">Hear Letter Again</button>
-		<button class="start-button" id="gameButton" onclick="onGameButton();">Start Game</button>
 		<button class="whole-alphabet-button" id="wholeAlphabet" onclick="playWholeAlphabet();">Hear Whole Alphabet</button>
+		<button class="start-button" id="gameButton" onclick="onGameButton();">Start Game</button>
+		<button class="invalid-button" id="hearAgainButton" onclick="playLetterToGuess();">Hear Letter Again</button>
+		<button class="invalid-button" id="giveMeAHintButton" onclick="giveAHint();">Give Me a Hint</button>
 		<button class="unclickable" id="scoreText">Score: 0</button>
 		<button class="unclickable" id="highscoreText">Highscore: 0</button>
 	</div>
@@ -205,6 +214,8 @@
 	<div class="footer">
 		<p>I have slowed down the pronunciation to emphasize phonemes and accent. You will learn to say them faster than this.</p>
 		<p>...</p>
+		<p>Made by Jaden Keller, NCF class of 2027. Report issues via email jaden@kellerville.com</p>
+		<p>I would also just be delighted to know if you found this helpful.</p>
 		<p>...</p>
 		<p>Notes about Phonetic Source:<p>
 		<p>It is extremely difficult to discern which pronunciations are "correct".</p>

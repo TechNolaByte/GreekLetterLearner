@@ -28,7 +28,12 @@ function setupAudioEngine(){
 }
 
 soundsToPreload = [
-"α.m4a","β.m4a", "γ.m4a", "δ.m4a", "ε.m4a", "ζ.m4a", "η.m4a", "θ.m4a", "ι.m4a", "κ.m4a", "λ.m4a", "μ.m4a", "ν.m4a", "ξ.m4a", "ο.m4a", "π.m4a", "ρ.m4a", "σ (ς).m4a", "τ.m4a", "υ.m4a", "φ.m4a", "χ.m4a", "ψ.m4a", "ω.m4a","new-highscore.mp3","right.mp3","wrong1.m4a","wrong2.m4a","wrong3.m4a","wrong4.m4a","wrong5.m4a","whole_alphabet.m4a"
+"α.m4a","β.m4a", "γ.m4a", "δ.m4a", "ε.m4a", "ζ.m4a", "η.m4a", "θ.m4a", "ι.m4a", "κ.m4a", "λ.m4a", "μ.m4a", "ν.m4a", "ξ.m4a", "ο.m4a", "π.m4a", "ρ.m4a", "σ (ς).m4a", "τ.m4a", "υ.m4a", "φ.m4a", "χ.m4a", "ψ.m4a", "ω.m4a",
+"new-highscore.mp3","right.mp3",
+"hit-01.m4a","hit-02.m4a","hit-03.m4a","hit-04.m4a","hit-05.m4a","hit-06.m4a",
+"whole_alphabet.m4a",
+"hint-01.m4a","hint-02.m4a","hint-03.m4a","hint-04.m4a","hint-05.m4a","hint-06.m4a","hint-07.m4a","hint-08.m4a","hint-09.m4a","hint-10.m4a","hint-11.m4a","hint-12.m4a",
+"no-more-hints.m4a"
 ];
 soundCountToLoad = soundsToPreload.length;
 soundBuffers = {};
@@ -126,6 +131,7 @@ const scoreText = document.getElementById("scoreText");
 const highscoreText = document.getElementById("highscoreText");
 const hearAgainButton = document.getElementById("hearAgainButton");
 const caseButton = document.getElementById("changeCaseButton");
+const giveMeAHintButton = document.getElementById("giveMeAHintButton");
 
 //# Hide Post-Game Popup
 const popup = document.getElementById('popup');
@@ -172,6 +178,9 @@ function onGameButton(){
 		
 		hearAgainButton.classList.remove("invalid-button");
 		hearAgainButton.classList.add("hear-letter-again-button");
+		
+		giveMeAHintButton.classList.remove("invalid-button");
+		giveMeAHintButton.classList.add("give-me-a-hint-button");
 
 		// Choose letter
 		chooseNextLetter();
@@ -183,6 +192,59 @@ function onGameButton(){
 function playLetterToGuess(){
 	if(!isGameRunning) return;
 	playSound(letterToGuess+".m4a");
+}
+
+function shuffle(array){
+    var currentIndex = array.length;
+    var randomIndex, temp;
+    while(currentIndex > 0){
+        randomIndex = Math.floor(Math.random() * currentIndex);
+        currentIndex--;
+
+        var temp = array[currentIndex];
+        array[currentIndex] = array[randomIndex];
+        array[randomIndex] = temp;
+    }
+}
+hint_sound_effects = ["hint-01.m4a","hint-02.m4a","hint-03.m4a","hint-04.m4a","hint-05.m4a","hint-06.m4a","hint-07.m4a","hint-08.m4a","hint-09.m4a","hint-10.m4a","hint-11.m4a","hint-12.m4a"];
+shuffle(hint_sound_effects);
+hint_sound_effects_index = -1;
+console.log(hint_sound_effects);
+function giveAHint(){
+	if(!isGameRunning) return;
+	
+	setScore(score-1);
+	
+	hint_sound_effects_index++;
+	if(hint_sound_effects_index > hint_sound_effects.length){
+		shuffle(hint_sound_effects);
+		hint_sound_effects_index = 0;
+	}
+	
+	playSound(hint_sound_effects[hint_sound_effects_index]);
+	
+	mark_cell = function(e){ 
+		var cell = document.getElementById(letter)
+		cell.classList.remove('selected');
+		cell.classList.add('selected-hint');
+	}
+	
+	var not_it_letters = [];
+	for(var i = 0; i < letters.length; i++){
+		var try_letter = letters[i];
+		if(try_letter != letterToGuess && !document.getElementById(try_letter).classList.contains('selected-hint')){
+			not_it_letters.push(try_letter);
+		}
+	}
+
+	shuffle(not_it_letters);
+	if(not_it_letters.length > 0){
+		mark_cell(not_it_letters.pop())
+		if(not_it_letters.length > 0) mark_cell(not_it_letters.pop())
+		if(not_it_letters.length > 0) mark_cell(not_it_letters.pop())
+	}else{
+		playSound("no-more-hints.m4a");
+	}
 }
 
 function guessLetter(letter){
@@ -211,8 +273,9 @@ function guessLetter(letter){
 			cell.classList.remove('selected');
 			cell.classList.add('selected-wrong');
 			
-			var nextSoundID = "wrong"+(1+Math.floor(Math.random()*4));
-			playSound(nextSoundID+".m4a", gameEnd);
+			wrong_sounds = ["hit-01.m4a","hit-02.m4a","hit-03.m4a","hit-04.m4a","hit-05.m4a","hit-06.m4a"];
+			shuffle(wrong_sounds);
+			playSound(wrong_sounds.pop(), gameEnd);
 		}
 	}
 	
@@ -233,12 +296,15 @@ function gameEnd(){
 	hearAgainButton.classList.remove("hear-letter-again-button");
 	hearAgainButton.classList.add("invalid-button");
 	
+	giveMeAHintButton.classList.remove("give-me-a-hint-button");
+	giveMeAHintButton.classList.add("invalid-button");
+
 	// Confetti every letter guessed this game
 	for(var i = 0; i < guessHistory.length; i++){
 		confetti({
 			spread: 180,
 			ticks: 200,
-			gravity: 0.6,
+			gravity: 0.4,
 			decay: 0.94,
 			startVelocity: 18,
 			particleCount: 1,
@@ -249,7 +315,7 @@ function gameEnd(){
 				emoji: {
 					particles: {
 						size: {
-							value: 25
+							value: 32
 						}
 					},
 					value: [guessHistory[i]]
